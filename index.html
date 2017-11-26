@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>E-shop</title>
+	<script src="js/jquery-3.1.1.min.js"></script>
+	<link href="https://cdn.muicss.com/mui-0.9.9-rc2/css/mui.min.css" rel="stylesheet" type="text/css" />
+	<script src="https://cdn.muicss.com/mui-0.9.9-rc2/js/mui.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script src="js/jscript.js"></script>
+</head>
+<body>
+	<header class="mui-row">
+		<span>
+			<h1>E-shop</h1>		
+		</span>
+	</header>
+	<selection class="mui-row location-selection">
+		<form class="mui-form mui-col-md-8 mui-col-md-offset-2 selectform">
+			<div class="mui-col-md-3 mui-select">
+	            <label>Product name</label>
+            	<input type="text" id="prod_name" class="input-1">
+	        </div>
+	        <div class="mui-col-md-3 mui-select">
+	            <label>Code</label>
+	            <input type="text" id="prod_code" class="input-1">
+	    	</div>
+	    	<div class="mui-col-md-2 mui-select">
+	            <label>Price</label>
+	            <input type="number" id="prod_price" class="input-2">
+	    	</div>
+	    	<div class="mui-col-md-2 mui-select">
+	            <label>Quantity</label>
+	            <input type="number" id="prod_count" class="input-2">
+	    	</div>
+	    	<div class="mui-col-md-2 btn-div">
+	            <button class="mui-btn mui-btn--primary" id="btn-add">Add</button>
+	    	</div>
+		</form>
+	</selection>
+
+	<article class="mui-row">
+		<div class="mui-col-md-8 mui-col-md-offset-2" >
+			<table class="mui-table tbl-goods"></table>
+		</div>
+	</article>
+
+
+</body>
+</html>
