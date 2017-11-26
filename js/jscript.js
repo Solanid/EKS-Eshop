@@ -5,18 +5,23 @@ jQuery(document).ready(function($) {
 	var jsonData;
 	getAllProducts();
 
+	var product = {
+        name: "", 
+        countryCode: "", 
+        price: "", 
+        count: "", 
+    };
+
 /** LISTENERS */
 	$(document).on('click', '#btn-add', function(event) {
 		$(".message").remove();
 		event.preventDefault();
-		var product = {
-            name: $("#prod_name").val(), 
-            countryCode: $("#prod_code").val(),
-            price: $("#prod_price").val(), 
-            count: $("#prod_count").val(), 
-        };
+
+		product.name = $("#prod_name").val();
+		product.countryCode = $("#prod_code").val();
+		product.price = $("#prod_price").val();
+		product.count = $("#prod_count").val();
         if (product.name != '' && product.countryCode != '' && product.price != '' && product.count != '') {
-        	console.log(product);
         	addProduct(product);
         }
 	});
@@ -27,8 +32,6 @@ jQuery(document).ready(function($) {
 		$('.btn-edit').attr({
 			disabled: true
 		});
-
-
 		var product_id = $(this).val();
 		var product = [];
 		var pressed_btn = $(this).parent();
@@ -57,21 +60,27 @@ jQuery(document).ready(function($) {
 			"id": "btn_delete",
 			"value": product_id
 		}).text('Delete')));
-		console.log(product);
-
 		// $("#table_div").hide().show(0);
 	});
 
 	$(document).on('click', '#btn_confirm', function(event) {
+		var product_id = $(this).val();
+		var pressed_btn = $(this).parent();
 
+		product.count = pressed_btn.prev().children().val();
+		product.price = pressed_btn.prev().prev().children().val();
+		product.countryCode = pressed_btn.prev().prev().prev().children().val();
+		product.name = pressed_btn.prev().prev().prev().prev().children().val();
+
+		updateProduct(product_id);
 	});
 
 	$(document).on('click', '#btn_delete', function(event) {
-
+		removeProduct($(this).val());
 	});
 
 	$(document).on('click', '#btn_cancel', function(event) {
-
+		getAllProducts();
 	});
 
 	
@@ -90,6 +99,13 @@ jQuery(document).ready(function($) {
 		$("#prod_count").val('');
 	}
 
+	function writeMessage (text) {
+		$(".message").remove();
+		$("<div/>", {
+			"class": "message"
+		}).appendTo('.location-selection');
+		$("<span/>").text(text).appendTo('.message');
+	}
 
 /** REQUESTS */
 	function addProduct (product) {
@@ -98,17 +114,27 @@ jQuery(document).ready(function($) {
 	        contentType: "application/json",
 	        method: "POST",
 	        data: JSON.stringify(product),
-		    success: function() {
+		    success: function(res) {
 		    	getAllProducts();
-		    	console.log(res);
 		    	clearInputs();
 		    },
 		    error: function() {
-	    		console.log("fail");
-	    		$("<div/>", {
-					"class": "message"
-				}).appendTo('.location-selection');
-				$("<span/>").text("Unable to add product").appendTo('.message');
+		    	writeMessage("Unable to add product");
+		    }});
+	}
+
+	function updateProduct (id) {
+		$.ajax({
+	        url: url+"/products/"+id,
+	        contentType: "application/json",
+	        method: "PUT",
+	        crossDomain: true,
+	        data: JSON.stringify(product),
+		    success: function(res) {
+		    	getAllProducts();
+		    },
+		    error: function(res) {
+		    	writeMessage("Unable to update product");
 		    }});
 	}
 
@@ -118,14 +144,9 @@ jQuery(document).ready(function($) {
 	        method: "DELETE",
 	        success: function(res) {
 	        	getAllProducts();
-		    	console.log(res);
-		    	clearInputs();
 	        },
 	        error: function() {
-	        	$("<div/>", {
-					"class": "message"
-				}).appendTo('.location-selection');
-				$("<span/>").text("Unable to remove product").appendTo('.message');
+				writeMessage("Unable to remove product");
 	        }});
 	}
 
@@ -136,16 +157,11 @@ jQuery(document).ready(function($) {
 	        method: "GET",
 		    success: function(data) {
 		    	clearTable();
-		    	console.log(data);
 		    	jsonData=data;
 		    	appnedData(data);
 	    	},
 	        error: function() {
-	    		console.log("fail");
-	    		$("<div/>", {
-					"class": "message"
-				}).appendTo('.location-selection');
-				$("<span/>").text("Can not find any goods.").appendTo('.message');
+	    		writeMessage("Can not find any goods");
 	    	}});
 	}
 /* END-REQUESTS **/
